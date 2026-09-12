@@ -1,31 +1,31 @@
-# HEH-002 — Section 1: Reality Map v1.1
+# HEH-002 — Section 1: Reality Map v1.2
 **Documento:** `docs/contracts/HEH-002/01-REALITY-MAP.md`  
-**Base:** Auditoría física y evidencia directa de VPS2 y Supabase SSOT (`SWARM-PROFILE-AS-IS-v1`).  
+**Base:** Auditoría física, telemetría de EasyPanel en vivo (`2.24.198.231`) y Supabase SSOT.  
 **Naturaleza:** Consolidación descriptiva del AS-IS real. No diseño. No invención.  
 **Frontera respetada:** Registra lo verificado físicamente, delimitando la topología real sobre la que operará el arnés.  
-**Estado:** CONSOLIDADO Y VERIFICADO POR CUSTODIO.  
+**Estado:** CONSOLIDADO Y VERIFICADO POR OPERADOR Y CUSTODIO.  
 
 ---
 
 ## 1.1 Topología Real Verificada
 
-### 1.1.1 Runtime y Contenedores en VPS2
-Existen **5 contenedores Docker independientes desplegados físicamente en VPS2**:
+### 1.1.1 Runtime y Contenedores en VPS2 (`2.24.198.231`)
+Existen **6 contenedores Docker independientes desplegados físicamente en VPS2**:
 
-| Agente | Contenedor VPS2 | `runtime_path` Base | Manifiesto KBP | Daemons Activos |
-| :--- | :--- | :--- | :--- | :--- |
-| **`hermes-ops`** | `hermes-agent-9sgc-hermes-agent-1` | `/opt/data/scripts/` | `knowledge/manifests/hermes-ops.yaml` | `RT-001` (`escuchador.py`) |
-| **`hermes-qa`** | `hermes-agent-cdxz-hermes-agent-1` | `/opt/data/scripts/` | `knowledge/manifests/hermes-qa.yaml` | `RT-002` (`escuchador.py`) |
-| **`hermes-marketing`** | `hermes-agent-x4vs-hermes-agent-1` | `/opt/data/scripts/` | `knowledge/manifests/hermes-marketing.yaml` | `RT-003` (`escuchador.py`) |
-| **`ariadne-data`** | `hermes-agent-75lu-hermes-agent-1` | `/opt/data/scripts/` | `knowledge/manifests/ariadne-data.yaml` | `RT-004` (`escuchador.py`) + `RT-005` (`escuchador_crm.py`) |
-| **`hermes-commercial`** | `hermes-agent-dpkf-hermes-agent-1` | `/opt/data/scripts/` | `knowledge/manifests/hermes-commercial.yaml` | `RT-006` (`escuchador.py`) |
+| Agente | Contenedor VPS2 | Puerto Web/TTYd | `runtime_path` Base | Manifiesto KBP | Daemons Activos |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **`hermes-ops`** | `hermes-agent-9sgc-hermes-agent-1` | `4860` (interno) | `/opt/data/scripts/` | `knowledge/manifests/hermes-ops.yaml` | `RT-001` (`escuchador.py`) |
+| **`hermes-qa`** | `hermes-agent-cdxz-hermes-agent-1` | `4860` (interno) | `/opt/data/scripts/` | `knowledge/manifests/hermes-qa.yaml` | `RT-002` (`escuchador.py`) |
+| **`hermes-marketing`** | `hermes-agent-x4vs-hermes-agent-1` | `4860` (interno) | `/opt/data/scripts/` | `knowledge/manifests/hermes-marketing.yaml` | `RT-003` (`escuchador.py`) |
+| **`ariadne-data`** | `hermes-agent-75lu-hermes-agent-1` | `4860` (interno) | `/opt/data/scripts/` | `knowledge/manifests/ariadne-data.yaml` | `RT-004` (`escuchador.py`) + `RT-005` (`escuchador_crm.py`) |
+| **`hermes-commercial`** | `hermes-agent-dpkf-hermes-agent-1` | `4860` (interno) | `/opt/data/scripts/` | `knowledge/manifests/hermes-commercial.yaml` | `RT-006` (`escuchador.py`) |
+| **`atlas-intel`** | `hermes-agent-ictm-hermes-agent-1` | `32835:4860` | `/opt/data/scripts/` | `knowledge/manifests/intel.yaml` | `RT-007` / `escuchador.py` (Polling XML/Feeds) |
 
-#### 🔍 Resolución de la Discrepancia 5 Contenedores vs 6 Daemons (`RT-001` a `RT-006`):
-1. **Conteo de Agentes Físicos:** Son **5 contenedores**.
-2. **El 6º Agente (`atlas-intel`):** Es una identidad `DESIGNED` en `public.personal_ia` (`estado='offline'`), sin contenedor ni runtime desplegado en VPS2 (0 filas en `runtime_registry`).
-3. **Origen de los 6 IDs (`RT-001` a `RT-006`):** `ariadne-data` aloja **2 daemons simultáneos** en su contenedor:
-   * `RT-004`: `escuchador.py` (tareas generales de datos/scraping).
-   * `RT-005`: `escuchador_crm.py` (monitoreo especializado de transiciones de leads CRM).
+#### 🔍 Confirmación de la Topología 6 Contenedores:
+1. **Conteo de Agentes Físicos:** Son exactamente **6 contenedores en ejecución (`running`)**.
+2. **`atlas-intel`:** Contenedor EasyPanel `hermes-agent-ictm-hermes-agent-1`, mapeado en puerto `32835` de VPS2 (`2.24.198.231:32835`). Consumo ~583 MB RAM.
+3. **Repositorio de Código del Peer:** [`https://github.com/aliuntravelsrl-hash/atlas-intel`](https://github.com/aliuntravelsrl-hash/atlas-intel).
+4. **Daemons en Swarm:** 6 contenedores + 2 daemons en `ariadne-data` (`escuchador.py` + `escuchador_crm.py`), garantizando cobertura completa de todo el pipeline.
 
 ---
 
